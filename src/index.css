@@ -1,0 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Playfair Display", serif;
+  
+  --color-gold-50: #fdfcf4;
+  --color-gold-100: #f9e498;
+  --color-gold-200: #f4d36e;
+  --color-gold-300: #efc144;
+  --color-gold-400: #eab01a;
+  --color-gold-500: #d4af37;
+  --color-gold-600: #ae8b27;
+  --color-gold-700: #886717;
+  --color-gold-800: #624307;
+  --color-gold-900: #3c1f00;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  html, body {
+    @apply relative bg-[#050505] text-white font-sans antialiased selection:bg-gold-500/30 selection:text-gold-100;
+  }
+}
+
+.gold-gradient {
+  background: linear-gradient(135deg, #F9E498 0%, #D4AF37 50%, #886717 100%);
+}
+
+.gold-text {
+  @apply bg-clip-text text-transparent;
+  background-image: linear-gradient(135deg, #F9E498 0%, #D4AF37 50%, #886717 100%);
+}
+
+.gold-glow {
+  box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
+}
+
+.gold-border {
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.glass {
+  background: rgba(5, 5, 5, 0.7);
+  backdrop-filter: blur(12px);
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 14px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-[#050505];
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #F9E498, #D4AF37);
+  @apply rounded-full border-2 border-[#050505] hover:bg-gold-300 transition-colors;
+}
+
+::-webkit-scrollbar-button:single-button {
+  background-color: #050505;
+  display: block;
+  border-style: none;
+  height: 30px;
+  width: 14px;
+}
+
+/* Seta para cima */
+::-webkit-scrollbar-button:single-button:vertical:decrement {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='%23D4AF37'><polygon points='50,20 80,70 20,70'/></svg>");
+  background-size: 20px;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* Seta para baixo */
+::-webkit-scrollbar-button:single-button:vertical:increment {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='%23D4AF37'><polygon points='50,80 80,30 20,30'/></svg>");
+  background-size: 20px;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: auto;
+  scrollbar-color: #D4AF37 #050505;
+}
