@@ -36,10 +36,8 @@ export default function App() {
   const [isPlayingVideo, setIsPlayingVideo] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  // Dynamic YouTube subs
   const [ytSubs, setYtSubs] = useState(CONTENT.socials.links.find(l => l.platform === "YouTube")?.followers || "3,28 Milhões");
-
-  // Dynamic delivery date
-  const formattedDeliveryDate = "08/06/2026";
 
   const heroRef = useRef(null);
 
@@ -241,7 +239,7 @@ export default function App() {
                   {CONTENT.hero.cta}
                 </GoldButton>
                 <p className="mt-8 text-[11px] tracking-[0.3em] text-center w-full">
-                  <span className="text-white">Entrega prevista para:</span> <span className="gold-text font-black ml-1">{formattedDeliveryDate}</span>
+                  <span className="text-white">Entrega prevista para:</span> <span className="gold-text font-black ml-1">{CONTENT.origin.deliveryDate}</span>
                 </p>
               </div>
             </div>
@@ -322,7 +320,7 @@ export default function App() {
                 GARANTA SEU EXEMPLAR
               </GoldButton>
               <span className="text-white text-[11px] italic font-light tracking-[0.2em] uppercase text-center w-full block">
-                Entrega prevista para: <span className="gold-text font-bold ml-1">{formattedDeliveryDate}</span>
+                Entrega prevista para: <span className="gold-text font-bold ml-1">{CONTENT.origin.deliveryDate}</span>
               </span>
             </div>
           </motion.div>
