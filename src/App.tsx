@@ -552,7 +552,7 @@ export default function App() {
                   {CONTENT.manoValter.cta}
                 </GoldButton>
                 
-                <p className="text-[10px] tracking-[0.3em] uppercase">
+                <p className="text-[8px] tracking-[0.3em] uppercase">
                   <span className="text-white">Entrega prevista para:</span> <span className="gold-text font-black ml-1 uppercase">{CONTENT.manoValter.deliveryDate}</span>
                 </p>
               </div>
