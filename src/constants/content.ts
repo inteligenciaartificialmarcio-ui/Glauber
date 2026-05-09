@@ -21,7 +21,8 @@ export const CONTENT: ContentConfig = {
     shipping: "FRETE GRÁTIS PARA TODO O BRASIL",
     cta: "GARANTIR MEU EXEMPLAR",
     bookImage: "https://i.imgur.com/f3OjCUD.png",
-    discountPercent: "38,93% OFF"
+    discountPercent: "38,93% OFF",
+    videoUrl: "https://i.imgur.com/CaHOEij.mp4"
   },
   synopsis: {
     label: "SOBRE O LIVRO",
@@ -90,7 +91,7 @@ export const CONTENT: ContentConfig = {
     ],
     cta: "ADQUIRA JÁ",
     deliveryDate: "08/06/2026",
-    image: "https://i.imgur.com/aaa5Uc6.png"
+    image: "https://i.imgur.com/qXxnLys.png"
   },
   extraTopic: {
     label: "O LIVRO",

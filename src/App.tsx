@@ -149,7 +149,22 @@ export default function App() {
       </AnimatePresence>
 
       {/* Hero Section */}
-      <section ref={heroRef} className="relative pt-24 pb-20 md:pt-32 md:pb-32 px-6 overflow-hidden">
+      <section ref={heroRef} className="relative pt-24 pb-20 md:pt-32 md:pb-32 px-6 overflow-hidden min-h-[90vh] flex items-center">
+        {/* Background Video */}
+        <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 bg-black/60 z-10" /> {/* Background Overlay */}
+          <video 
+            autoPlay 
+            muted 
+            loop 
+            playsInline 
+            className="w-full h-full object-cover"
+            poster="https://i.imgur.com/DBDAaLnh.jpg"
+          >
+            <source src={CONTENT.hero.videoUrl} type="video/mp4" />
+          </video>
+        </div>
+
         {/* Parallax Background Decor */}
         <motion.div 
           style={{ y: heroParallaxY }}
@@ -271,14 +286,9 @@ export default function App() {
           </motion.div>
         </div>
 
-        <motion.div 
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
-          className="mt-12 flex flex-col items-center gap-2 opacity-50 relative z-20"
-        >
-          <span className="text-[10px] tracking-[0.3em] uppercase">Scroll</span>
-          <ChevronDown className="w-16 h-16 text-gold-500" />
-        </motion.div>
+        {/* Bottom Fade Gradient for smooth transition */}
+        <div className="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-black via-black/40 to-transparent z-10" />
+
       </section>
 
       {/* Childhood Dreams / Impact Block */}
