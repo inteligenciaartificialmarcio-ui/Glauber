@@ -429,7 +429,7 @@ export default function App() {
               <div className="absolute -inset-1 gold-gradient rounded-3xl blur opacity-20 group-hover:opacity-40 transition-opacity duration-500" />
               <div className="relative rounded-2xl overflow-hidden shadow-[0_0_40px_rgba(212,175,55,0.1)] border border-gold-500/40 bg-black/20 group-hover:border-gold-500/60 group-hover:shadow-[0_0_60px_rgba(212,175,55,0.2)] transition-all duration-500 group-hover:scale-[1.02] h-full">
                 <img 
-                  src="https://i.imgur.com/rUhW0MI.png" 
+                  src="/assets/images/author-portrait.png" 
                   alt="Foto de perfil de Glauber, autor do livro" 
                   width={600}
                   height={800}
@@ -482,7 +482,7 @@ export default function App() {
               <div className="absolute -inset-1 gold-gradient rounded-3xl blur opacity-20 group-hover:opacity-40 transition-opacity duration-500" />
               <div className="relative rounded-2xl overflow-hidden shadow-[0_0_40px_rgba(212,175,55,0.1)] border border-gold-500/40 bg-black/20 group-hover:border-gold-500/60 group-hover:shadow-[0_0_60px_rgba(212,175,55,0.2)] transition-all duration-500 group-hover:scale-[1.02] h-full">
                 <img 
-                  src="https://i.imgur.com/BM4LDG4.png" 
+                  src="/assets/images/childhood-photo.png" 
                   alt="Glauber em sua infância, origem da sua história" 
                   width={600}
                   height={800}
@@ -1020,7 +1020,7 @@ export default function App() {
             <div className="flex flex-col items-center group">
               <div className="absolute inset-0 bg-gold-500/5 blur-[40px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700 -z-10" />
               <img 
-                src="https://i.imgur.com/CpKEy5k.png" 
+                src="/assets/images/piovan-logo.png" 
                 alt="Logo Piovan Editora" 
                 loading="lazy"
                 className="opacity-100 scale-110 transform-gpu group-hover:scale-120 transition-transform duration-500"

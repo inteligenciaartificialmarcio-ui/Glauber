@@ -3,7 +3,7 @@ import { ContentConfig } from "../types";
 export const CONTENT: ContentConfig = {
   brand: {
     logo: "FG",
-    logoImage: "https://i.imgur.com/sKycKNZ.png",
+    logoImage: "/assets/images/brand-logo.png",
     name: "Fala Glauber",
     checkoutUrl: "#checkout"
   },
@@ -20,7 +20,7 @@ export const CONTENT: ContentConfig = {
     priceNumeric: 54.90,
     shipping: "FRETE GRÁTIS PARA TODO O BRASIL",
     cta: "GARANTIR MEU EXEMPLAR",
-    bookImage: "https://i.imgur.com/f3OjCUD.png",
+    bookImage: "/assets/images/book-cover.png",
     discountPercent: "38,93% OFF"
   },
   synopsis: {
@@ -32,8 +32,8 @@ export const CONTENT: ContentConfig = {
       "Agora em meio impresso, Glauber une a sua trajetória pessoal ao podcast porque tem um propósito: “lutar contra tudo de podre que foi instalado no país” e inspirar pessoas a acreditarem nelas mesmas. Ele chama ao protagonismo baseado na máxima de que a palavra convence, mas o exemplo arrasta.",
       "Nas páginas de Fala Glauber – Um Bilhão e Meio de Views, Glauber revisita os cinco anos de programa e recorda momentos marcantes de sua vida. Na junção das duas abordagens está algo raro: um Glauber ainda mais exposto do que aquele que arrasta multidões no YouTube. Se você ainda não conhece o Fala Glauber, o livro é uma boa forma de sanar essa lacuna. E se você já conhece, prepare-se: na reflexão da palavra escrita, você encontrará um Glauber que um bilhão e meio de views ainda não havia trazido a público."
     ],
-    videoPlaceholder: "https://i.imgur.com/DBDAaLnh.jpg",
-    videoUrl: "https://i.imgur.com/DBDAaLn.mp4",
+    videoPlaceholder: "/assets/images/video-placeholder.jpg",
+    videoUrl: "/assets/videos/intro-video.mp4",
     language: "Português"
   },
   origin: {
@@ -47,7 +47,7 @@ export const CONTENT: ContentConfig = {
     cta: "ADQUIRA JÁ",
     deliveryLabel: "Entrega prevista para:",
     deliveryDate: "08/06/2026",
-    image: "https://i.imgur.com/Ruqm2aE.jpg"
+    image: "/assets/images/origin-bg.jpg"
   },
   manoValter: {
     label: "O MEU BRAÇO DIREITO",
@@ -58,7 +58,7 @@ export const CONTENT: ContentConfig = {
     ],
     cta: "ADICIONAR AO CARRINHO",
     deliveryDate: "08/06/2026",
-    image: "https://i.imgur.com/2hqPSeH.png"
+    image: "/assets/images/mano-valter.png"
   },
   peopleContent: {
     title: "CONTEÚDO PARA AS PESSOAS E CONSTRUÍDO POR MILHÕES DE MÃOS",
@@ -67,7 +67,7 @@ export const CONTENT: ContentConfig = {
     ],
     cta: "COMPRAR O LIVRO",
     deliveryDate: "08/06/2026",
-    image: "https://i.imgur.com/oX8A4ph.png"
+    image: "/assets/images/audience-content.png"
   },
   author: {
     label: "CONHEÇA O APRESENTADOR",
@@ -78,7 +78,7 @@ export const CONTENT: ContentConfig = {
       "Ex-policial federal e sonhador incansável, Glauber transformou sua paixão por comunicação em uma plataforma que já impactou milhões de vidas, trazendo convidados de elite e discutindo trajetórias de sucesso com autenticidade.",
       "Este livro é o registro definitivo de sua jornada: desde os campos de futebol do subúrbio até os bastidores do maior podcast policial do país."
     ],
-    image: "https://i.imgur.com/QM1zmq8.png",
+    image: "/assets/images/author-bio.png",
     cta: "COMPRAR O LIVRO",
     deliveryDate: "08/06/2026"
   },
@@ -90,7 +90,7 @@ export const CONTENT: ContentConfig = {
     ],
     cta: "ADQUIRA JÁ",
     deliveryDate: "08/06/2026",
-    image: "https://i.imgur.com/qXxnLys.png"
+    image: "/assets/images/mission-img.png"
   },
   extraTopic: {
     label: "O LIVRO",
@@ -101,7 +101,7 @@ export const CONTENT: ContentConfig = {
     ],
     cta: "ADQUIRA O LIVRO AGORA",
     deliveryDate: "08/06/2026",
-    image: "https://i.imgur.com/tvbbykS.png"
+    image: "/assets/images/book-specs.png"
   },
   footerCta: {
     title: "Sua Jornada Começa Agora",
