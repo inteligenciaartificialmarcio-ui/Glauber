@@ -247,7 +247,7 @@ export default function App() {
                     ease: "linear",
                     repeatDelay: 1
                   }}
-                  className="absolute top-0 h-full w-20 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-20 z-0"
+                  className="absolute top-0 h-full w-20 bg-gradient-to-r from-transparent via-gold-300/40 to-transparent -skew-x-20 z-0"
                 />
                 <span className="relative z-10">PRÉ-VENDA EXCLUSIVA DO LIVRO</span>
               </motion.span>
