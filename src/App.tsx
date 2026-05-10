@@ -36,8 +36,13 @@ export default function App() {
   const [isPlayingVideo, setIsPlayingVideo] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  // Dynamic YouTube subs
-  const [ytSubs, setYtSubs] = useState(CONTENT.socials.links.find(l => l.platform === "YouTube")?.followers || "3,28 Milhões");
+  // Dynamic Social Stats
+  const [socialStats, setSocialStats] = useState({
+    YouTube: CONTENT.socials.links.find(l => l.platform === "YouTube")?.followers || "3,28 Milhões",
+    Instagram: CONTENT.socials.links.find(l => l.platform === "Instagram")?.followers || "426 Mil",
+    TikTok: CONTENT.socials.links.find(l => l.platform === "TikTok")?.followers || "489,9 Mil",
+    Facebook: CONTENT.socials.links.find(l => l.platform === "Facebook")?.followers || "2,3 Mil"
+  });
 
   const heroRef = useRef(null);
 
@@ -52,24 +57,45 @@ export default function App() {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
     
-    // Fetch dynamic YouTube subs
-    const fetchYTSubs = async () => {
+    // Fetch dynamic Social Stats
+    const fetchStats = async () => {
       try {
-        const res = await fetch("/api/youtube-subs");
+        const res = await fetch("/api/social-stats");
         const data = await res.json();
-        if (data.subscribers) setYtSubs(data.subscribers);
+        if (data && !data.error) {
+          setSocialStats(data);
+        }
       } catch (err) {
-        console.error("Failed to fetch YT subs:", err);
+        console.error("Failed to fetch Social Stats:", err);
       }
     };
     
-    fetchYTSubs();
+    fetchStats();
     
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
-    <div className="relative min-h-screen selection:bg-gold-500/30">
+    <main className="relative min-h-screen selection:bg-gold-500/30">
+      {/* Structured Data for SEO */}
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Book",
+          "name": "Fala Glauber - O Livro",
+          "author": {
+            "@type": "Person",
+            "name": "Glauber"
+          },
+          "description": "A história de Glauber, do podcast Fala Glauber.",
+          "offers": {
+            "@type": "Offer",
+            "price": "57.00",
+            "priceCurrency": "BRL",
+            "availability": "https://schema.org/PreOrder"
+          }
+        })}
+      </script>
       {/* Background Decor */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
         <div className="absolute top-[-10%] right-[-10%] w-[60%] h-[60%] bg-gold-900/10 blur-[150px] rounded-full" />
@@ -77,7 +103,7 @@ export default function App() {
       </div>
 
       {/* Navigation */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled ? "glass border-b border-gold-500/20 py-3" : "py-6"}`}>
+      <nav className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 ${isScrolled ? "glass border-b border-gold-500/20 py-3" : "bg-black/60 md:bg-transparent py-4 md:py-6"}`}>
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
           <div className="flex items-center">
           </div>
@@ -87,6 +113,7 @@ export default function App() {
               <motion.a 
                 key={item.label} 
                 href={item.href}
+                aria-label={`Ir para a seção ${item.label}`}
                 whileHover={{ 
                   color: "#d4af37",
                   textShadow: "0 0 8px rgba(212, 175, 55, 0.8)",
@@ -101,16 +128,19 @@ export default function App() {
 
           <div className="flex items-center gap-4">
             <GoldButton 
-              className="hidden sm:flex py-2 px-4 h-auto text-[10px] font-bold tracking-[0.2em] border-gold-500/30"
+              className="flex py-2 px-4 h-auto text-[10px] font-bold tracking-[0.2em] border-gold-500/30"
               onClick={() => setIsCartOpen(true)}
+              aria-label="Abrir carrinho de compras"
             >
               COMPRAR AGORA
             </GoldButton>
             <button 
+              type="button"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden text-gold-200"
+              className="flex md:hidden text-white hover:text-gold-500 transition-colors p-2"
+              aria-label={isMobileMenuOpen ? "Fechar Menu" : "Abrir Menu"}
             >
-              {isMobileMenuOpen ? <X /> : <Menu />}
+              {isMobileMenuOpen ? <X size={32} /> : <Menu size={32} />}
             </button>
           </div>
         </div>
@@ -120,51 +150,71 @@ export default function App() {
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, x: "100%" }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: "100%" }}
-            className="fixed inset-0 z-40 glass md:hidden flex flex-col items-center justify-center gap-8"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[200] md:hidden"
           >
-            {CONTENT.nav.map((item) => (
-              <a 
-                key={item.label} 
-                href={item.href}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="text-xl font-serif gold-text tracking-widest"
-              >
-                {item.label}
-              </a>
-            ))}
-            <button 
-              onClick={() => {
-                setIsMobileMenuOpen(false);
-                setIsCartOpen(true);
-              }}
-              className="gold-gradient text-black px-8 py-3 rounded-md font-bold tracking-widest text-center"
+            {/* Backdrop */}
+            <div 
+              className="absolute inset-0 bg-black/95 backdrop-blur-xl"
+              onClick={() => setIsMobileMenuOpen(false)}
+            />
+            
+            {/* Menu Content */}
+            <motion.div
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="absolute top-0 right-0 bottom-0 w-full flex flex-col items-center justify-center gap-10 p-10"
             >
-              COMPRAR AGORA
-            </button>
+              <button 
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="absolute top-8 right-8 text-gold-500"
+              >
+                <X size={32} />
+              </button>
+
+              {CONTENT.nav.map((item, i) => (
+                <motion.a 
+                  key={item.label} 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 + i * 0.1 }}
+                  href={item.href}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="text-2xl font-serif gold-text tracking-[0.2em] uppercase"
+                >
+                  {item.label}
+                </motion.a>
+              ))}
+              
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 + CONTENT.nav.length * 0.1 }}
+                className="pt-8 w-full max-w-[280px]"
+              >
+                <GoldButton 
+                  primary 
+                  className="w-full py-4 text-sm"
+                  aria-label="Abrir carrinho de compras"
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    setIsCartOpen(true);
+                  }}
+                >
+                  COMPRAR AGORA
+                </GoldButton>
+              </motion.div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
 
       {/* Hero Section */}
-      <section ref={heroRef} className="relative pt-24 pb-20 md:pt-32 md:pb-32 px-6 overflow-hidden min-h-[90vh] flex items-center">
-        {/* Background Video */}
-        <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-black/60 z-10" /> {/* Background Overlay */}
-          <video 
-            autoPlay 
-            muted 
-            loop 
-            playsInline 
-            className="w-full h-full object-cover"
-            poster="https://i.imgur.com/DBDAaLnh.jpg"
-          >
-            <source src={CONTENT.hero.videoUrl} type="video/mp4" />
-          </video>
-        </div>
-
+      <section ref={heroRef} className="relative pt-24 pb-20 md:pt-32 md:pb-32 px-6 overflow-hidden">
         {/* Parallax Background Decor */}
         <motion.div 
           style={{ y: heroParallaxY }}
@@ -173,20 +223,33 @@ export default function App() {
         </motion.div>
 
 
-        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center relative z-10">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-10">
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
+            className="flex flex-col items-center w-full"
           >
-            <div className="text-center mb-12">
+            <div className="text-center mb-12 flex flex-col items-center w-full">
               <motion.span 
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="inline-block text-gold-500 font-bold tracking-[0.3em] text-xs md:text-sm mb-6 uppercase bg-gold-500/5 px-6 py-2 rounded-full border border-gold-500/20 backdrop-blur-sm"
+                className="inline-block text-gold-500 font-bold tracking-[0.3em] text-xs md:text-sm mb-6 uppercase bg-gold-500/5 px-6 py-2 rounded-full border border-gold-500/20 backdrop-blur-sm relative overflow-hidden whitespace-nowrap"
               >
-                PRÉ-VENDA EXCLUSIVA DO LIVRO
+                <motion.div
+                  animate={{
+                    left: ["-100%", "200%"],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "linear",
+                    repeatDelay: 1
+                  }}
+                  className="absolute top-0 h-full w-20 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-20 z-0"
+                />
+                <span className="relative z-10">PRÉ-VENDA EXCLUSIVA DO LIVRO</span>
               </motion.span>
               
               <motion.h1 
@@ -212,8 +275,10 @@ export default function App() {
                   <div className="relative rounded-2xl overflow-hidden shadow-[0_0_40px_rgba(212,175,55,0.1)] border border-gold-500/40 bg-black/20 group-hover:border-gold-500/60 group-hover:shadow-[0_0_60px_rgba(212,175,55,0.2)] transition-all duration-500 group-hover:scale-[1.02]">
                     <img 
                       src={CONTENT.hero.bookImage} 
-                      alt="Book Cover Mobile" 
+                      alt="Capa do livro Fala Glauber em perspectiva" 
                       referrerPolicy="no-referrer"
+                      width={280}
+                      height={400}
                       className="w-full h-auto block"
                     />
                   </div>
@@ -224,23 +289,23 @@ export default function App() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
-                className="text-white text-base md:text-xl max-w-xl mx-auto leading-relaxed font-light italic"
+                className="text-white text-base md:text-xl max-w-xl mx-auto leading-relaxed font-light italic text-center"
               >
                 Conheça o homem que comanda o podcast com 1 bilhão e meio de views e nenhuma concessão!
               </motion.p>
             </div>
 
-            <div className="flex flex-col items-center">
-              <div className="flex flex-col items-center group w-full sm:w-[320px]">
+            <div className="flex flex-col items-center w-full">
+              <div className="flex flex-col items-center group w-full sm:w-[320px] mx-auto">
                 {/* Preço e Frete - Centralizados com o botão */}
-                <div className="space-y-1 mb-6 text-white/60 text-center w-full">
+                <div className="space-y-2 mb-6 text-white/60 text-center w-full flex flex-col items-center">
                   <div className="flex items-center justify-center gap-2 flex-wrap">
                     <p className="text-sm">
                       De: <span className="line-through">{CONTENT.hero.oldPrice}</span> * Por: <span className="text-gold-300 font-bold text-lg">{CONTENT.hero.newPrice}</span>
                     </p>
                     <span className="bg-gold-500 text-black text-[10px] font-black px-1.5 py-0.5 rounded-sm tracking-tighter shadow-lg shadow-gold-500/20">{CONTENT.hero.discountPercent}</span>
                   </div>
-                  <p className="text-xs tracking-[0.1em] text-gold-200/80 uppercase font-semibold">
+                  <p className="text-xs tracking-[0.1em] text-gold-200/80 uppercase font-semibold text-center">
                     + {CONTENT.hero.shipping}
                   </p>
                 </div>
@@ -249,6 +314,7 @@ export default function App() {
                   primary 
                   icon={Lock} 
                   className="w-full"
+                  aria-label="Adicionar livro ao carrinho"
                   onClick={() => setIsCartOpen(true)}
                 >
                   {CONTENT.hero.cta}
@@ -276,8 +342,10 @@ export default function App() {
               >
                 <motion.img 
                   src={CONTENT.hero.bookImage} 
-                  alt="Luxury Book Cover" 
+                  alt="Capa do livro Fala Glauber - Edição de Luxo" 
                   referrerPolicy="no-referrer"
+                  width={400}
+                  height={580}
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
                   className="relative w-full max-w-[400px] block cursor-pointer group-hover:scale-[1.03] transition-all duration-500"
                 />
@@ -286,9 +354,14 @@ export default function App() {
           </motion.div>
         </div>
 
-        {/* Bottom Fade Gradient for smooth transition */}
-        <div className="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-black via-black/40 to-transparent z-10" />
-
+        <motion.div 
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 2, repeat: Infinity }}
+          className="mt-12 flex flex-col items-center gap-2 opacity-50 relative z-20"
+        >
+          <span className="text-[10px] tracking-[0.3em] uppercase">Scroll</span>
+          <ChevronDown className="w-16 h-16 text-gold-500" />
+        </motion.div>
       </section>
 
       {/* Childhood Dreams / Impact Block */}
@@ -305,11 +378,11 @@ export default function App() {
             <div className="absolute -top-24 -right-24 w-64 h-64 bg-gold-500/10 blur-[100px] rounded-full" />
             <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-gold-500/10 blur-[100px] rounded-full" />
 
-            <h3 className="text-xl md:text-2xl font-bold tracking-[0.3em] gold-text mb-8 uppercase text-center font-serif italic">
+            <h3 className="text-xl md:text-2xl font-bold tracking-[0.3em] gold-text mb-8 uppercase text-center font-serif">
               SONHOS DE INFÂNCIA
             </h3>
             
-            <p className="text-lg md:text-2xl font-light leading-relaxed text-justify mb-12 max-w-4xl text-white/90 font-serif italic">
+            <p className="text-lg md:text-2xl font-light leading-relaxed text-justify mb-12 max-w-4xl text-white/90 font-serif">
               "Minha infância foi sonhando em ser jogador de futebol. Eu era mais um dos milhares de jovens do subúrbio
               que via no futebol uma forma de sair daquela realidade de pobreza e brilhar fazendo o que amava. Não
               esqueço o dia, eu com 11 anos atravessando a ponte para treinar, estava sozinho. Naquela época treinava
@@ -337,7 +410,7 @@ export default function App() {
           
           <div id="sinopse" className="text-center mb-8 md:mb-12 scroll-mt-24">
             <SectionLabel center>{CONTENT.synopsis.label}</SectionLabel>
-            <h2 className="font-serif text-4xl md:text-6xl font-bold tracking-tight">
+            <h2 className="font-serif text-4xl md:text-[50px] font-bold tracking-tight">
               {CONTENT.synopsis.title}
             </h2>
           </div>
@@ -357,7 +430,10 @@ export default function App() {
               <div className="relative rounded-2xl overflow-hidden shadow-[0_0_40px_rgba(212,175,55,0.1)] border border-gold-500/40 bg-black/20 group-hover:border-gold-500/60 group-hover:shadow-[0_0_60px_rgba(212,175,55,0.2)] transition-all duration-500 group-hover:scale-[1.02] h-full">
                 <img 
                   src="https://i.imgur.com/rUhW0MI.png" 
-                  alt="Glauber" 
+                  alt="Foto de perfil de Glauber, autor do livro" 
+                  width={600}
+                  height={800}
+                  loading="lazy"
                   className="w-full h-full object-cover object-top"
                   referrerPolicy="no-referrer"
                 />
@@ -388,7 +464,7 @@ export default function App() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16 md:mb-24">
             <SectionLabel center>{CONTENT.origin.label}</SectionLabel>
-            <h2 className="font-serif text-4xl md:text-6xl font-bold tracking-tight uppercase">
+            <h2 className="font-serif text-4xl md:text-[50px] font-bold tracking-tight uppercase">
               {CONTENT.origin.title}
             </h2>
           </div>
@@ -407,7 +483,10 @@ export default function App() {
               <div className="relative rounded-2xl overflow-hidden shadow-[0_0_40px_rgba(212,175,55,0.1)] border border-gold-500/40 bg-black/20 group-hover:border-gold-500/60 group-hover:shadow-[0_0_60px_rgba(212,175,55,0.2)] transition-all duration-500 group-hover:scale-[1.02] h-full">
                 <img 
                   src="https://i.imgur.com/BM4LDG4.png" 
-                  alt="Origem Glauber" 
+                  alt="Glauber em sua infância, origem da sua história" 
+                  width={600}
+                  height={800}
+                  loading="lazy"
                   className="w-full h-full object-cover object-top"
                   referrerPolicy="no-referrer"
                 />
@@ -483,6 +562,7 @@ export default function App() {
                   <GoldButton
                     primary
                     icon={Lock}
+                    aria-label="Adicionar livro ao carrinho"
                     onClick={() => setIsCartOpen(true)}
                     className="w-full"
                   >
@@ -512,7 +592,7 @@ export default function App() {
               </span>
               <div className="h-px w-8 bg-gold-500/50" />
             </div>
-            <h2 className="font-serif text-4xl md:text-6xl font-bold tracking-tight uppercase">
+            <h2 className="font-serif text-4xl md:text-[50px] font-bold tracking-tight uppercase">
               MEU BRAÇO DIREITO
             </h2>
           </div>
@@ -532,7 +612,10 @@ export default function App() {
                 <div className="relative rounded-2xl overflow-hidden shadow-[0_0_40px_rgba(212,175,55,0.1)] border border-gold-500/40 bg-black/20 group-hover:border-gold-500/60 group-hover:shadow-[0_0_60px_rgba(212,175,55,0.2)] transition-all duration-500 group-hover:scale-[1.02] h-full">
                   <img 
                     src={CONTENT.manoValter.image} 
-                    alt={CONTENT.manoValter.title}
+                    alt="Mano Valter, parceiro de Glauber"
+                    width={500}
+                    height={625}
+                    loading="lazy"
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -557,6 +640,7 @@ export default function App() {
                 <GoldButton
                   primary
                   icon={Lock}
+                  aria-label="Adicionar livro ao carrinho"
                   onClick={() => setIsCartOpen(true)}
                 >
                   {CONTENT.manoValter.cta}
@@ -586,7 +670,7 @@ export default function App() {
               <div className="mt-4">
                 <SectionLabel center={true}>CONTEÚDO E PÚBLICO</SectionLabel>
               </div>
-              <h2 className="font-serif text-2xl md:text-3xl font-bold text-white leading-tight uppercase tracking-tight">
+              <h2 className="font-serif text-2xl font-bold text-white leading-tight uppercase tracking-tight">
                 {CONTENT.peopleContent.title}
               </h2>
             </div>
@@ -602,7 +686,7 @@ export default function App() {
                 <div className="mt-4">
                   <SectionLabel center={true}>CONTEÚDO E PÚBLICO</SectionLabel>
                 </div>
-                <h2 className="font-serif text-2xl md:text-3xl font-bold mb-8 text-white leading-tight uppercase tracking-tight">
+                <h2 className="font-serif text-2xl font-bold mb-8 text-white leading-tight uppercase tracking-tight">
                   {CONTENT.peopleContent.title}
                 </h2>
               </div>
@@ -617,6 +701,7 @@ export default function App() {
                 <GoldButton 
                   primary 
                   className="px-12"
+                  aria-label="Adicionar livro ao carrinho"
                   onClick={() => setIsCartOpen(true)}
                 >
                   {CONTENT.peopleContent.cta}
@@ -642,7 +727,10 @@ export default function App() {
               <div className="rounded-2xl overflow-hidden shadow-[0_0_40px_rgba(212,175,55,0.1)] border border-gold-500/40 bg-black/20 group-hover:border-gold-500/60 group-hover:shadow-[0_0_60px_rgba(212,175,55,0.2)] transition-all duration-500 group-hover:scale-[1.02]">
                 <img 
                   src={CONTENT.peopleContent.image} 
-                  alt={CONTENT.peopleContent.title}
+                  alt="Thumbnail do conteúdo e público do podcast Fala Glauber"
+                  width={600}
+                  height={400}
+                  loading="lazy"
                   className="w-full h-auto block"
                 />
               </div>
@@ -673,7 +761,10 @@ export default function App() {
               <div className="relative z-10 rounded-2xl overflow-hidden shadow-[0_0_40px_rgba(212,175,55,0.1)] border border-gold-500/40 bg-black/20 group-hover:border-gold-500/60 group-hover:shadow-[0_0_60px_rgba(212,175,55,0.2)] transition-all duration-500 group-hover:scale-[1.02] w-full max-w-md mx-auto lg:ml-0">
                 <img 
                   src={CONTENT.author.image} 
-                  alt={CONTENT.author.name}
+                  alt="Retrato de Glauber, o autor"
+                  width={448}
+                  height={560}
+                  loading="lazy"
                   referrerPolicy="no-referrer"
                   className="w-full h-auto block"
                 />
@@ -686,7 +777,7 @@ export default function App() {
                 <div className="mt-4">
                   <SectionLabel center={true}>{CONTENT.author.label}</SectionLabel>
                 </div>
-                <h2 className="font-serif text-4xl md:text-6xl font-bold mb-4">{CONTENT.author.title}</h2>
+                <h2 className="font-serif text-4xl md:text-[40px] font-bold mb-4">{CONTENT.author.title}</h2>
                 <div className="gold-text font-serif text-2xl mb-8 italic">{CONTENT.author.name}</div>
               </div>
               
@@ -700,6 +791,7 @@ export default function App() {
                 <GoldButton 
                   primary 
                   className="px-12"
+                  aria-label="Adicionar livro ao carrinho"
                   onClick={() => setIsCartOpen(true)}
                 >
                   {CONTENT.author.cta}
@@ -716,13 +808,13 @@ export default function App() {
       </section>
 
       {/* Mission Section */}
-      <section id="missao" className="pt-20 pb-20 md:pb-32 px-6 overflow-hidden">
+      <section id="missao" className="pt-20 pb-10 md:pb-16 px-6 overflow-hidden">
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="text-center mb-24">
             <div className="flex justify-center mb-4">
               <SectionLabel center={true}>O PROPÓSITO</SectionLabel>
             </div>
-            <h2 className="font-serif text-4xl md:text-6xl font-bold text-white uppercase tracking-tighter">
+            <h2 className="font-serif text-4xl md:text-[50px] font-bold text-white uppercase tracking-tighter">
               {CONTENT.mission.title}
             </h2>
           </div>
@@ -742,7 +834,10 @@ export default function App() {
               <div className="relative rounded-2xl overflow-hidden shadow-[0_0_40px_rgba(212,175,55,0.1)] border border-gold-500/40 bg-black/20 group-hover:border-gold-500/60 group-hover:shadow-[0_0_60px_rgba(212,175,55,0.2)] transition-all duration-500 group-hover:scale-[1.02]">
                 <img 
                   src={CONTENT.mission.image} 
-                  alt="A Minha Missão" 
+                  alt="Missão do projeto Fala Glauber" 
+                  width={600}
+                  height={400}
+                  loading="lazy"
                   referrerPolicy="no-referrer"
                   className="w-full h-auto block"
                 />
@@ -776,6 +871,7 @@ export default function App() {
                 <GoldButton 
                   primary 
                   className="px-16"
+                  aria-label="Adicionar livro ao carrinho"
                   onClick={() => setIsCartOpen(true)}
                 >
                   {CONTENT.mission.cta}
@@ -792,13 +888,13 @@ export default function App() {
       </section>
 
       {/* Transformation Section */}
-      <section id="transformacao" className="pt-20 pb-20 md:pb-32 px-6 overflow-hidden bg-zinc-950/30">
+      <section id="transformacao" className="pt-10 pb-10 md:pb-16 px-6 overflow-hidden bg-zinc-950/30">
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="text-center mb-24">
             <div className="flex justify-center mb-4">
               <SectionLabel center={true}>{CONTENT.extraTopic?.label}</SectionLabel>
             </div>
-            <h2 className="font-serif text-3xl md:text-5xl font-bold text-white uppercase tracking-tighter">
+            <h2 className="font-serif text-3xl md:text-[50px] font-bold text-white uppercase tracking-tighter">
               {CONTENT.extraTopic?.title}
             </h2>
           </div>
@@ -818,7 +914,10 @@ export default function App() {
               <div className="relative rounded-2xl overflow-hidden shadow-[0_0_40px_rgba(212,175,55,0.1)] border-2 border-gold-500/40 bg-black/20 group-hover:border-gold-500/60 group-hover:shadow-[0_0_60px_rgba(212,175,55,0.2)] transition-all duration-500 scale-[0.9] group-hover:scale-[0.95]">
                 <img 
                   src={CONTENT.extraTopic?.image} 
-                  alt={CONTENT.extraTopic?.title} 
+                  alt="Tópico extra: Transformação" 
+                  width={600}
+                  height={400}
+                  loading="lazy"
                   referrerPolicy="no-referrer"
                   className="w-full h-auto block"
                 />
@@ -852,6 +951,7 @@ export default function App() {
                 <GoldButton 
                   primary 
                   className="px-16"
+                  aria-label="Adicionar livro ao carrinho"
                   onClick={() => setIsCartOpen(true)}
                 >
                   {CONTENT.extraTopic?.cta}
@@ -868,11 +968,11 @@ export default function App() {
       </section>
 
       {/* Social Media Grid */}
-      <section className="py-20 md:py-32 px-6">
+      <section className="pt-10 pb-20 md:pt-16 md:pb-32 px-6">
         <div className="max-w-7xl mx-auto text-center">
           <div className="flex flex-col items-center mb-16">
              <SectionLabel center>{CONTENT.socials.title}</SectionLabel>
-             <h2 className="font-serif text-4xl md:text-6xl font-bold mb-6 italic">{CONTENT.socials.subtitle}</h2>
+             <h2 className="font-serif text-4xl md:text-[50px] font-bold mb-6">{CONTENT.socials.subtitle}</h2>
              <p className="text-white max-w-lg">{CONTENT.socials.description}</p>
           </div>
 
@@ -883,6 +983,7 @@ export default function App() {
                 href={link.href}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label={`Seguir no ${link.platform}`}
                 whileHover={{ 
                   y: -10, 
                   boxShadow: "0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(212, 175, 55, 0.1)",
@@ -898,7 +999,7 @@ export default function App() {
                 </div>
                 <div className="font-bold tracking-widest text-[10px] text-white/40 uppercase">{link.platform}</div>
                 <div className="font-serif text-xl">
-                  {link.platform === "YouTube" ? ytSubs : link.followers}
+                  {socialStats[link.platform as keyof typeof socialStats] || link.followers}
                 </div>
                 <div className="text-xs text-gold-500/60">{link.handle}</div>
               </motion.a>
@@ -920,7 +1021,8 @@ export default function App() {
               <div className="absolute inset-0 bg-gold-500/5 blur-[40px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700 -z-10" />
               <img 
                 src="https://i.imgur.com/CpKEy5k.png" 
-                alt="Piovan Editora" 
+                alt="Logo Piovan Editora" 
+                loading="lazy"
                 className="opacity-100 scale-110 transform-gpu group-hover:scale-120 transition-transform duration-500"
                 referrerPolicy="no-referrer"
               />
@@ -945,6 +1047,7 @@ export default function App() {
         href={CONTENT.contact.whatsappLink}
         target="_blank"
         rel="noopener noreferrer"
+        aria-label="Falar conosco no WhatsApp"
         whileHover={{ 
           scale: 1.1, 
           boxShadow: "0 0 30px rgba(212, 175, 55, 0.8)",
@@ -962,6 +1065,6 @@ export default function App() {
         isOpen={isCartOpen} 
         onClose={() => setIsCartOpen(false)} 
       />
-    </div>
+    </main>
   );
 }

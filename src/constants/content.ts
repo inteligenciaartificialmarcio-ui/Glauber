@@ -21,8 +21,7 @@ export const CONTENT: ContentConfig = {
     shipping: "FRETE GRÁTIS PARA TODO O BRASIL",
     cta: "GARANTIR MEU EXEMPLAR",
     bookImage: "https://i.imgur.com/f3OjCUD.png",
-    discountPercent: "38,93% OFF",
-    videoUrl: "https://i.imgur.com/CaHOEij.mp4"
+    discountPercent: "38,93% OFF"
   },
   synopsis: {
     label: "SOBRE O LIVRO",
@@ -117,9 +116,9 @@ export const CONTENT: ContentConfig = {
     description: "Siga o Fala Glauber nas redes sociais e fique por dentro de novidades, bastidores e cortes exclusivos.",
     links: [
       { platform: "YouTube", handle: "Fala Glauber Podcast", followers: "3,28 Milhões", href: "https://www.youtube.com/@FalaGlauberPodcast" },
-      { platform: "Instagram", handle: "@falaglauberpodcast", followers: "420K", href: "https://www.instagram.com/falaglauberpodcast/" },
-      { platform: "Facebook", handle: "Fala Glauber", followers: "2,1 Mil", href: "https://www.facebook.com/falaglauber" },
-      { platform: "TikTok", handle: "@falaglauberpodcast", followers: "490K", href: "https://www.tiktok.com/@falaglauberpodcast" }
+      { platform: "Instagram", handle: "@falaglauberpodcast", followers: "426 Mil", href: "https://www.instagram.com/falaglauberpodcast/" },
+      { platform: "Facebook", handle: "Fala Glauber", followers: "2,3 Mil", href: "https://www.facebook.com/falaglauber" },
+      { platform: "TikTok", handle: "@falaglauberpodcast", followers: "489,9 Mil", href: "https://www.tiktok.com/@falaglauberpodcast" }
     ]
   },
   contact: {

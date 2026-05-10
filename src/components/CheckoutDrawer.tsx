@@ -17,12 +17,27 @@ export const CheckoutDrawer: React.FC<CheckoutDrawerProps> = ({ isOpen, onClose 
   const quantity = items.reduce((acc, item) => acc + item.quantity, 0);
   const total = price * quantity;
 
-  // Reset when closed
+  // Reset when closed and handle Escape key
   useEffect(() => {
-    if (!isOpen) {
-      // Logic for reset if needed
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleEscape);
+      // Prevent body scroll when drawer is open
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
     }
-  }, [isOpen]);
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen, onClose]);
 
   const handleIncrement = () => {
     setItems(current => current.map(item => ({ ...item, quantity: item.quantity + 1 })));
@@ -66,6 +81,9 @@ export const CheckoutDrawer: React.FC<CheckoutDrawerProps> = ({ isOpen, onClose 
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Carrinho de compras"
             className="fixed top-0 right-0 bottom-0 w-full max-w-md bg-[#050505] text-white shadow-2xl z-[101] flex flex-col font-sans overflow-hidden border-l border-gold-500/20"
           >
             {/* Header */}
@@ -76,6 +94,7 @@ export const CheckoutDrawer: React.FC<CheckoutDrawerProps> = ({ isOpen, onClose 
                 </h2>
                 <button 
                   onClick={onClose}
+                  aria-label="Fechar carrinho"
                   className="hover:opacity-60 transition-opacity text-gold-500"
                 >
                   <X className="w-7 h-7 stroke-[1]" />
@@ -85,7 +104,7 @@ export const CheckoutDrawer: React.FC<CheckoutDrawerProps> = ({ isOpen, onClose 
             </div>
 
             {/* Content Area */}
-            <div className="flex-1 px-4 scrollbar-hide overflow-hidden">
+            <div className="flex-1 px-4 overflow-y-auto overflow-x-hidden scrollbar-none custom-scrollbar pb-6">
               {items.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-center space-y-4">
                   <Trash2 className="w-10 h-10 text-white/20" />
@@ -104,7 +123,7 @@ export const CheckoutDrawer: React.FC<CheckoutDrawerProps> = ({ isOpen, onClose 
                     <div className="w-[75px] h-[100px] flex-shrink-0 border border-gold-500/20 p-1.5 bg-black relative">
                       <img 
                         src={CONTENT.hero.bookImage} 
-                        alt="Capa do Livro" 
+                        alt="Capa do livro no carrinho" 
                         className="w-full h-full object-contain"
                         referrerPolicy="no-referrer"
                       />
@@ -118,6 +137,7 @@ export const CheckoutDrawer: React.FC<CheckoutDrawerProps> = ({ isOpen, onClose 
                         </h4>
                         <button 
                           onClick={handleRemove}
+                          aria-label="Remover item"
                           className="text-white/40 hover:text-red-500 transition-colors"
                         >
                           <Trash2 className="w-5 h-5 stroke-[1]" />
@@ -133,13 +153,15 @@ export const CheckoutDrawer: React.FC<CheckoutDrawerProps> = ({ isOpen, onClose 
                         <div className="flex items-center border border-gold-500/30">
                           <button 
                             onClick={handleDecrement}
+                            aria-label="Diminuir quantidade"
                             className="p-0.5 px-2.5 border-r border-gold-500/30 hover:bg-gold-500/10 flex items-center justify-center"
                           >
                             <Minus className="w-3.5 h-3.5 text-gold-500 stroke-[1.5]" />
                           </button>
-                          <span className="w-8 text-center text-sm font-light text-white">{quantity}</span>
+                          <span className="w-8 text-center text-sm font-light text-white" aria-live="polite">{quantity}</span>
                           <button 
                             onClick={handleIncrement}
+                            aria-label="Aumentar quantidade"
                             className="p-0.5 px-2.5 border-l border-gold-500/30 hover:bg-gold-500/10 flex items-center justify-center"
                           >
                             <Plus className="w-3.5 h-3.5 text-gold-500 stroke-[1.5]" />
@@ -159,6 +181,8 @@ export const CheckoutDrawer: React.FC<CheckoutDrawerProps> = ({ isOpen, onClose 
                   <div className="py-4 space-y-3">
                     <button 
                       onClick={() => setShowPromo(!showPromo)}
+                      aria-expanded={showPromo}
+                      aria-label="Inserir código promocional"
                       className="flex items-center gap-2 text-gold-500 hover:text-gold-300 transition-colors text-[14px] font-light cursor-pointer"
                     >
                       <Tag className="w-4 h-4 rotate-90 stroke-[1.5]" />
@@ -195,45 +219,35 @@ export const CheckoutDrawer: React.FC<CheckoutDrawerProps> = ({ isOpen, onClose 
 
             {/* Footer Summary & Buttons */}
             {items.length > 0 && (
-              <div className="p-4 pt-0 bg-[#050505]">
+              <div className="p-4 pt-0 bg-[#050505] flex-shrink-0 border-t border-gold-500/10 shadow-[0_-10px_20px_rgba(0,0,0,0.5)]">
                 <div className="space-y-1 pt-4 pb-2">
                   <div className="flex justify-between items-center">
-                    <span className="text-[20px] font-light text-white">Total estimado</span>
-                    <span className="text-[20px] font-light text-gold-500">R$ {total.toFixed(2).replace('.', ',')}</span>
+                    <span className="text-[20px] font-light text-white font-sans">Total estimado</span>
+                    <span className="text-[20px] font-medium text-gold-500">R$ {total.toFixed(2).replace('.', ',')}</span>
                   </div>
                   <p className="text-[13px] text-white/40 font-light">
                     Impostos e frete são calculados no checkout.
                   </p>
                 </div>
 
-                <div className="space-y-2 mt-2">
+                <div className="space-y-3 mt-4">
                   <button 
                     onClick={handleCheckout}
-                    className="w-full py-3 gold-gradient text-black font-bold uppercase hover:brightness-110 active:scale-[0.99] transition-all text-sm tracking-widest rounded-sm"
+                    className="w-full py-4 gold-gradient text-black font-bold uppercase hover:brightness-110 active:scale-[0.98] transition-all text-sm tracking-[0.2em] rounded-sm"
                   >
                     Finalizar Compra
                   </button>
                   <button 
                     onClick={onClose}
-                    className="w-full py-3 border border-gold-500/30 text-gold-200 font-normal hover:bg-gold-500/5 active:scale-[0.99] transition-all text-sm rounded-sm uppercase tracking-widest"
+                    className="w-full py-4 border border-gold-500/30 text-gold-200 font-medium hover:bg-gold-500/5 active:scale-[0.98] transition-all text-sm rounded-sm uppercase tracking-[0.2em]"
                   >
                     Continuar Navegando
                   </button>
                 </div>
 
-                <div className="flex items-center justify-center gap-1.5 text-white/40 pt-3 pb-5">
-                  <svg 
-                    width="12" 
-                    height="14" 
-                    viewBox="0 0 12 14" 
-                    fill="none" 
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="flex-shrink-0"
-                  >
-                    <rect x="1" y="6" width="10" height="7" rx="1" fill="currentColor" />
-                    <path d="M3.5 6V3.5C3.5 2.11929 4.61929 1 6 1C7.38071 1 8.5 2.11929 8.5 3.5V6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                  </svg>
-                  <span className="text-[13px] font-normal">Checkout seguro</span>
+                <div className="flex items-center justify-center gap-2 text-white/30 pt-6 pb-6">
+                  <Lock size={14} className="opacity-50" />
+                  <span className="text-[12px] uppercase tracking-widest font-medium">Checkout seguro</span>
                 </div>
               </div>
             )}

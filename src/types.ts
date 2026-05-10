@@ -35,7 +35,6 @@ export interface ContentConfig {
     cta: string;
     bookImage: string;
     discountPercent: string;
-    videoUrl?: string;
   };
   synopsis: {
     label: string;
