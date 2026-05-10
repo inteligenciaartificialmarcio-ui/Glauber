@@ -289,7 +289,7 @@ export default function App() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
-                className="text-white text-base md:text-xl max-w-xl mx-auto leading-relaxed font-light italic text-center"
+                className="text-white text-base md:text-xl max-w-xl mx-auto leading-relaxed font-normal italic text-center"
               >
                 Conheça o homem que comanda o podcast com 1 bilhão e meio de views e nenhuma concessão!
               </motion.p>
