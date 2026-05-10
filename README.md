@@ -1,20 +1,25 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Fala Glauber Podcast - Landing Page
 
-# Run and deploy your AI Studio app
+Esta é a landing page oficial do podcast **Fala Glauber**, desenvolvida para converter visitantes em leitores do livro e seguidores do canal.
 
-This contains everything you need to run your app locally.
+## Tecnologias Utilizadas
 
-View your app in AI Studio: https://ai.studio/apps/0c1054e1-b1a6-4edc-9cf5-08323f8dfd39
+- **React 18+** com **Vite**
+- **Express.js** (Backend para estatísticas dinâmicas)
+- **Tailwind CSS** (Estilização)
+- **Motion** (Animações)
+- **Lucide React** (Ícones)
 
-## Run Locally
+## Configuração
 
-**Prerequisites:**  Node.js
+1. Clone o repositório.
+2. Instale as dependências: `npm install`.
+3. Configure as variáveis de ambiente seguindo o `.env.example`.
+4. Inicie o servidor de desenvolvimento: `npm run dev`.
 
+## Funcionalidades
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+- Design premium e responsivo.
+- Integração com YouTube API para contagem de inscritos em tempo real.
+- Checkout drawer com integração direta para compra.
+- Seções informativas sobre o autor, missões e convidados.
