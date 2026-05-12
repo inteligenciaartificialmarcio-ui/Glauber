@@ -112,6 +112,17 @@ export default function App() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isMobileMenuOpen]);
+
   return (
     <main className="relative min-h-screen selection:bg-gold-500/30">
       {/* Structured Data for SEO */}
