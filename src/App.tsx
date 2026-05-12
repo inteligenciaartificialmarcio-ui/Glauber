@@ -115,11 +115,17 @@ export default function App() {
   useEffect(() => {
     if (isMobileMenuOpen) {
       document.body.style.overflow = "hidden";
+      document.body.style.overscrollBehavior = "none";
+      document.documentElement.style.overscrollBehavior = "none";
     } else {
       document.body.style.overflow = "unset";
+      document.body.style.overscrollBehavior = "unset";
+      document.documentElement.style.overscrollBehavior = "unset";
     }
     return () => {
       document.body.style.overflow = "unset";
+      document.body.style.overscrollBehavior = "unset";
+      document.documentElement.style.overscrollBehavior = "unset";
     };
   }, [isMobileMenuOpen]);
 
@@ -202,15 +208,15 @@ export default function App() {
       {/* Mobile Menu */}
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <motion.div
+            <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[200] md:hidden"
+            className="fixed inset-0 z-[200] md:hidden bg-black overscroll-none"
           >
             {/* Backdrop */}
             <div 
-              className="absolute inset-0 bg-black/95 backdrop-blur-xl"
+              className="absolute inset-0 bg-black"
               onClick={() => setIsMobileMenuOpen(false)}
             />
             
@@ -220,7 +226,7 @@ export default function App() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="absolute top-0 right-0 bottom-0 w-full flex flex-col items-center justify-center gap-10 p-10"
+              className="fixed inset-0 w-full flex flex-col items-center justify-center gap-10 p-10 bg-black"
             >
               <button 
                 onClick={() => setIsMobileMenuOpen(false)}
