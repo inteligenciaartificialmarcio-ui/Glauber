@@ -66,14 +66,26 @@ export default function App() {
       hls.loadSource(videoSrc);
       hls.attachMedia(video);
       hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        video.play().catch(e => console.error("Video autoplay failed:", e));
+        video.muted = true; // Ensure muted is explicitly set
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(e => {
+            console.log("Autoplay was prevented or interrupted, waiting for interaction:", e);
+          });
+        }
       });
       return () => hls.destroy();
     } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
       // For browsers with native HLS support (Safari)
       video.src = videoSrc;
       video.addEventListener("loadedmetadata", () => {
-        video.play().catch(e => console.error("Video autoplay failed:", e));
+        video.muted = true;
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(e => {
+            console.log("Autoplay was prevented or interrupted:", e);
+          });
+        }
       });
     }
   }, []);
@@ -129,40 +141,45 @@ export default function App() {
 
       {/* Navigation */}
       <nav className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 ${isScrolled ? "glass border-b border-gold-500/20 py-3" : "bg-black/60 md:bg-transparent py-4 md:py-6"}`}>
-        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+        <div className="w-full max-w-7xl mx-auto px-6 flex items-center justify-between relative">
           <div className="flex items-center">
           </div>
 
-          <div className="hidden md:flex items-center gap-10">
-            {CONTENT.nav.map((item) => (
-              <motion.a 
-                key={item.label} 
-                href={item.href}
-                aria-label={`Ir para a seção ${item.label}`}
-                whileHover={{ 
-                  color: "#d4af37",
-                  textShadow: "0 0 8px rgba(212, 175, 55, 0.8)",
-                  scale: 1.05
-                }}
-                className="text-xs font-medium tracking-[0.2em] text-white transition-colors"
-              >
-                {item.label}
-              </motion.a>
-            ))}
+          <div className="hidden md:absolute md:inset-0 md:flex md:items-center md:justify-center md:pointer-events-none">
+            <div className="flex items-center gap-10 pointer-events-auto">
+              {CONTENT.nav.map((item) => (
+                <motion.a 
+                  key={item.label} 
+                  href={item.href}
+                  aria-label={`Ir para a seção ${item.label}`}
+                  whileHover={{ 
+                    color: "#d4af37",
+                    textShadow: "0 0 8px rgba(212, 175, 55, 0.8)",
+                    scale: 1.05
+                  }}
+                  className="text-xs font-medium tracking-[0.2em] text-white transition-colors"
+                >
+                  {item.label}
+                </motion.a>
+              ))}
+            </div>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none md:static md:flex md:w-auto md:ml-auto md:mr-4">
             <GoldButton 
-              className="flex py-2 px-4 h-auto text-[10px] font-bold tracking-[0.2em] border-gold-500/30"
+              className="py-2.5 px-6 h-auto text-[11px] font-bold tracking-[0.25em] border-gold-500/30 whitespace-nowrap z-[110] pointer-events-auto shadow-[0_0_15px_rgba(212,175,55,0.1)]"
               onClick={() => setIsCartOpen(true)}
               aria-label="Abrir carrinho de compras"
             >
               COMPRAR AGORA
             </GoldButton>
+          </div>
+
+          <div className="flex items-center gap-4">
             <button 
               type="button"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="flex md:hidden text-white hover:text-gold-500 transition-colors p-2"
+              className="flex md:hidden text-white hover:text-gold-500 transition-colors p-2 z-[120]"
               aria-label={isMobileMenuOpen ? "Fechar Menu" : "Abrir Menu"}
             >
               {isMobileMenuOpen ? <X size={32} /> : <Menu size={32} />}
@@ -245,10 +262,12 @@ export default function App() {
           <video
             ref={videoRef}
             aria-hidden="true"
+            autoPlay
             muted
             loop
             playsInline
-            className="w-full h-full object-cover opacity-60"
+            preload="auto"
+            className="w-full h-full object-cover object-[center_35%] md:object-center opacity-60"
           />
           {/* Subtle Overlay to ensure text readability */}
           <div className="absolute inset-0 bg-black/40 z-[1]" />
@@ -397,7 +416,7 @@ export default function App() {
         </motion.div>
 
         {/* Bottom Transition Gradient */}
-        <div className="absolute bottom-0 left-0 right-0 h-96 bg-gradient-to-t from-[#050505] via-[#050505]/90 to-transparent z-[2]" />
+        <div className="absolute bottom-0 left-0 right-0 h-48 md:h-96 bg-gradient-to-t from-[#050505] via-[#050505]/90 to-transparent z-[2]" />
       </section>
 
       {/* Childhood Dreams / Impact Block */}
