@@ -1,3 +1,4 @@
+import Hls from "hls.js";
 import { motion, AnimatePresence, useScroll, useTransform } from "motion/react";
 import { 
   Lock, 
@@ -44,7 +45,8 @@ export default function App() {
     Facebook: CONTENT.socials.links.find(l => l.platform === "Facebook")?.followers || "2,3 Mil"
   });
 
-  const heroRef = useRef(null);
+  const heroRef = useRef<HTMLElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const { scrollYProgress: heroScrollY } = useScroll({
     target: heroRef,
@@ -52,6 +54,29 @@ export default function App() {
   });
 
   const heroParallaxY = useTransform(heroScrollY, [0, 1], ["0%", "30%"]);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const videoSrc = "https://stream.mux.com/NcU3HlHeF7CUL86azTTzpy3Tlb00d6iF3BmCdFslMJYM.m3u8";
+
+    if (Hls.isSupported()) {
+      const hls = new Hls();
+      hls.loadSource(videoSrc);
+      hls.attachMedia(video);
+      hls.on(Hls.Events.MANIFEST_PARSED, () => {
+        video.play().catch(e => console.error("Video autoplay failed:", e));
+      });
+      return () => hls.destroy();
+    } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+      // For browsers with native HLS support (Safari)
+      video.src = videoSrc;
+      video.addEventListener("loadedmetadata", () => {
+        video.play().catch(e => console.error("Video autoplay failed:", e));
+      });
+    }
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
@@ -214,11 +239,25 @@ export default function App() {
       </AnimatePresence>
 
       {/* Hero Section */}
-      <section ref={heroRef} className="relative pt-24 pb-20 md:pt-32 md:pb-32 px-6 overflow-hidden">
+      <section ref={heroRef} className="relative min-h-screen flex flex-col justify-center pt-24 pb-32 md:pt-32 md:pb-40 px-6 overflow-hidden">
+        {/* Background Video */}
+        <div className="absolute inset-0 z-0">
+          <video
+            ref={videoRef}
+            aria-hidden="true"
+            muted
+            loop
+            playsInline
+            className="w-full h-full object-cover opacity-60"
+          />
+          {/* Subtle Overlay to ensure text readability */}
+          <div className="absolute inset-0 bg-black/40 z-[1]" />
+        </div>
+
         {/* Parallax Background Decor */}
         <motion.div 
           style={{ y: heroParallaxY }}
-          className="absolute inset-0 pointer-events-none z-0"
+          className="absolute inset-0 pointer-events-none z-[1]"
         >
         </motion.div>
 
@@ -268,11 +307,8 @@ export default function App() {
                 transition={{ duration: 1, delay: 0.5 }}
                 className="lg:hidden mb-12 flex justify-center perspective-1000"
               >
-                <div className="relative group max-w-[280px]">
-                  {/* Glow Effect behind image */}
-                  <div className="absolute inset-0 bg-gold-500/10 blur-[40px] rounded-full opacity-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700 -z-10" />
-                  
-                  <div className="relative rounded-2xl overflow-hidden shadow-[0_0_40px_rgba(212,175,55,0.1)] border border-gold-500/40 bg-black/20 group-hover:border-gold-500/60 group-hover:shadow-[0_0_60px_rgba(212,175,55,0.2)] transition-all duration-500 group-hover:scale-[1.02]">
+                <div className="relative max-w-[280px] group">
+                  <div className="relative rounded-2xl overflow-hidden shadow-[0_0_40px_rgba(212,175,55,0.1)] border border-gold-500/40 bg-black/20 transition-all duration-500 group-hover:scale-[1.02]">
                     <img 
                       src={CONTENT.hero.bookImage} 
                       alt="Capa do livro Fala Glauber em perspectiva" 
@@ -333,12 +369,9 @@ export default function App() {
             className="hidden lg:flex relative justify-center perspective-1000"
           >
             <div className="relative group">
-              {/* Glow Effect behind image - desktop */}
-              <div className="absolute -inset-4 bg-gold-500/10 blur-[50px] rounded-full opacity-30 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700 -z-10" />
-              
               {/* Frame do site */}
               <motion.div 
-                className="relative rounded-2xl overflow-hidden shadow-[0_0_40px_rgba(212,175,55,0.1)] border border-gold-500/40 bg-black/20 group-hover:border-gold-500/60 group-hover:shadow-[0_0_60px_rgba(212,175,55,0.2)] transition-all duration-500"
+                className="relative rounded-2xl overflow-hidden shadow-[0_0_40px_rgba(212,175,55,0.1)] border border-gold-500/40 bg-black/20 transition-all duration-500 group-hover:scale-[1.02]"
               >
                 <motion.img 
                   src={CONTENT.hero.bookImage} 
@@ -347,7 +380,7 @@ export default function App() {
                   width={400}
                   height={580}
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                  className="relative w-full max-w-[400px] block cursor-pointer group-hover:scale-[1.03] transition-all duration-500"
+                  className="relative w-full max-w-[400px] block transition-all duration-500"
                 />
               </motion.div>
             </div>
@@ -357,15 +390,18 @@ export default function App() {
         <motion.div 
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 2, repeat: Infinity }}
-          className="mt-12 flex flex-col items-center gap-2 opacity-50 relative z-20"
+          className="absolute bottom-24 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-50 z-20"
         >
           <span className="text-[10px] tracking-[0.3em] uppercase">Scroll</span>
           <ChevronDown className="w-16 h-16 text-gold-500" />
         </motion.div>
+
+        {/* Bottom Transition Gradient */}
+        <div className="absolute bottom-0 left-0 right-0 h-96 bg-gradient-to-t from-[#050505] via-[#050505]/90 to-transparent z-[2]" />
       </section>
 
       {/* Childhood Dreams / Impact Block */}
-      <section id="infancia" className="pt-20 pb-0 md:pt-32 md:pb-0 px-6 bg-black/44">
+      <section id="infancia" className="pt-20 pb-0 md:pt-32 md:pb-0 px-6 bg-[#050505]">
         <div className="max-w-7xl mx-auto">
           {/* Impact Text Box - Styled to match site aesthetic */}
           <motion.div 
