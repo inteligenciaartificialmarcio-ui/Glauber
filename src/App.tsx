@@ -148,7 +148,7 @@ export default function App() {
   }, [isMobileMenuOpen]);
 
   return (
-    <main className="relative min-h-screen selection:bg-gold-500/30">
+    <main id="inicio" className="relative min-h-screen selection:bg-gold-500/30">
       {/* Structured Data for SEO */}
       <script type="application/ld+json">
         {JSON.stringify({

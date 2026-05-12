@@ -8,7 +8,7 @@ export const CONTENT: ContentConfig = {
     checkoutUrl: "#checkout"
   },
   nav: [
-    { label: "INÍCIO", href: "#" },
+    { label: "INÍCIO", href: "#inicio" },
     { label: "SINOPSE", href: "#sinopse" },
     { label: "AUTOR", href: "#autor" },
     { label: "CONTATO", href: "#contato" }
