@@ -390,7 +390,7 @@ export default function App() {
         <motion.div 
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 2, repeat: Infinity }}
-          className="absolute bottom-24 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-50 z-20"
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-50 z-20"
         >
           <span className="text-[10px] tracking-[0.3em] uppercase">Scroll</span>
           <ChevronDown className="w-16 h-16 text-gold-500" />
