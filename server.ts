@@ -28,9 +28,9 @@ async function startServer() {
       
       const stats = {
         YouTube: "3,28 Milhões",
-        Instagram: "426 Mil",
+        Instagram: "427 Mil",
         TikTok: "489,9 Mil",
-        Facebook: "2,3 Mil"
+        Facebook: "2,4 Mil"
       };
 
       // 1. YouTube Real Fetch

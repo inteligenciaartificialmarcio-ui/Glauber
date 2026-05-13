@@ -41,9 +41,9 @@ export default function App() {
   // Dynamic Social Stats
   const [socialStats, setSocialStats] = useState({
     YouTube: CONTENT.socials.links.find(l => l.platform === "YouTube")?.followers || "3,28 Milhões",
-    Instagram: CONTENT.socials.links.find(l => l.platform === "Instagram")?.followers || "426 Mil",
+    Instagram: CONTENT.socials.links.find(l => l.platform === "Instagram")?.followers || "427 Mil",
     TikTok: CONTENT.socials.links.find(l => l.platform === "TikTok")?.followers || "489,9 Mil",
-    Facebook: CONTENT.socials.links.find(l => l.platform === "Facebook")?.followers || "2,3 Mil"
+    Facebook: CONTENT.socials.links.find(l => l.platform === "Facebook")?.followers || "2,4 Mil"
   });
 
   const heroRef = useRef<HTMLElement>(null);

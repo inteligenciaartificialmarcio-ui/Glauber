@@ -116,21 +116,21 @@ export const CONTENT: ContentConfig = {
     description: "Siga o Fala Glauber nas redes sociais e fique por dentro de novidades, bastidores e cortes exclusivos.",
     links: [
       { platform: "YouTube", handle: "Fala Glauber Podcast", followers: "3,28 Milhões", href: "https://www.youtube.com/@FalaGlauberPodcast" },
-      { platform: "Instagram", handle: "@falaglauberpodcast", followers: "426 Mil", href: "https://www.instagram.com/falaglauberpodcast/" },
-      { platform: "Facebook", handle: "Fala Glauber", followers: "2,3 Mil", href: "https://www.facebook.com/falaglauber" },
+      { platform: "Instagram", handle: "@falaglauberpodcast", followers: "427 Mil", href: "https://www.instagram.com/falaglauberpodcast/" },
+      { platform: "Facebook", handle: "Glauber Mendonca", followers: "2,4 Mil", href: "https://www.facebook.com/falaglauber" },
       { platform: "TikTok", handle: "@falaglauberpodcast", followers: "489,9 Mil", href: "https://www.tiktok.com/@falaglauberpodcast" }
     ]
   },
   contact: {
     contactTitle: "Fale Conosco",
     email: "contato@falaglauber.com.br",
-    whatsapp: "(12) 98116-1375",
-    whatsappLink: "https://wa.me/5512981161375",
+    whatsapp: "+55 21 99850-0632",
+    whatsappLink: "https://wa.me/5521998500632",
     footerInfo: {
       company: "LIVRARIA SELO NOVO",
       cnpj: "CNPJ: 59.863.032/0001-63",
       service: "Atendimento de segunda a sexta das 9h as 18h exceto feriado.",
-      phone: "Telefone: (12) 98116-1375"
+      phone: "Telefone: +55 21 99850-0632"
     }
   }
 };
