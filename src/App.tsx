@@ -37,6 +37,7 @@ export default function App() {
   const [isPlayingVideo, setIsPlayingVideo] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const skipScrollRestoration = useRef(false);
   // Dynamic Social Stats
   const [socialStats, setSocialStats] = useState({
     YouTube: CONTENT.socials.links.find(l => l.platform === "YouTube")?.followers || "3,28 Milhões",
@@ -130,9 +131,10 @@ export default function App() {
       document.body.style.overflow = "unset";
       document.body.style.overscrollBehavior = "unset";
       document.documentElement.style.overscrollBehavior = "unset";
-      if (scrollY) {
+      if (scrollY && !skipScrollRestoration.current) {
         window.scrollTo(0, parseInt(scrollY || '0') * -1);
       }
+      skipScrollRestoration.current = false;
     }
     return () => {
       const scrollY = document.body.style.top;
@@ -142,9 +144,10 @@ export default function App() {
       document.body.style.overflow = "unset";
       document.body.style.overscrollBehavior = "unset";
       document.documentElement.style.overscrollBehavior = "unset";
-      if (scrollY) {
+      if (scrollY && !skipScrollRestoration.current) {
         window.scrollTo(0, parseInt(scrollY || '0') * -1);
       }
+      skipScrollRestoration.current = false;
     };
   }, [isMobileMenuOpen, isCartOpen]);
 
@@ -261,7 +264,10 @@ export default function App() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 + i * 0.1 }}
                   href={item.href}
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  onClick={() => {
+                    skipScrollRestoration.current = true;
+                    setIsMobileMenuOpen(false);
+                  }}
                   className="text-2xl font-serif gold-text tracking-[0.2em] uppercase"
                 >
                   {item.label}
