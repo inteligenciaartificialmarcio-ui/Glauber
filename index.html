@@ -21,6 +21,14 @@
     <meta property="og:description" content="Garanta seu exemplar em pré-venda exclusiva do livro do Podcast Fala Glauber." />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
+    <script>
+      // Suprimir mensagens de erro de WebSocket do Vite que sao normais neste ambiente de desenvolvimento
+      window.addEventListener('unhandledrejection', (event) => {
+        if (typeof event.reason === 'string' && event.reason.includes('WebSocket closed')) {
+          event.preventDefault();
+        }
+      });
+    </script>
   </head>
   <body>
     <div id="root"></div>
