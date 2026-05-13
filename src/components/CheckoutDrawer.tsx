@@ -17,7 +17,7 @@ export const CheckoutDrawer: React.FC<CheckoutDrawerProps> = ({ isOpen, onClose 
   const quantity = items.reduce((acc, item) => acc + item.quantity, 0);
   const total = price * quantity;
 
-  // Reset when closed and handle Escape key
+  // Handle Escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isOpen) {
@@ -27,15 +27,10 @@ export const CheckoutDrawer: React.FC<CheckoutDrawerProps> = ({ isOpen, onClose 
 
     if (isOpen) {
       document.addEventListener('keydown', handleEscape);
-      // Prevent body scroll when drawer is open
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
     }
 
     return () => {
       document.removeEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'unset';
     };
   }, [isOpen, onClose]);
 
@@ -72,7 +67,7 @@ export const CheckoutDrawer: React.FC<CheckoutDrawerProps> = ({ isOpen, onClose 
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100]"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] touch-none overscroll-none"
           />
 
           {/* Drawer */}
@@ -84,7 +79,7 @@ export const CheckoutDrawer: React.FC<CheckoutDrawerProps> = ({ isOpen, onClose 
             role="dialog"
             aria-modal="true"
             aria-label="Carrinho de compras"
-            className="fixed top-0 right-0 bottom-0 w-full max-w-md bg-[#050505] text-white shadow-2xl z-[101] flex flex-col font-sans overflow-hidden border-l border-gold-500/20"
+            className="fixed top-0 right-0 bottom-0 w-full max-w-md bg-[#050505] text-white shadow-2xl z-[101] flex flex-col font-sans overflow-hidden border-l border-gold-500/20 overscroll-none"
           >
             {/* Header */}
             <div className="p-4 pb-0">

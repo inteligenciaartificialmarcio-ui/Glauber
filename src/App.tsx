@@ -113,7 +113,8 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (isMobileMenuOpen) {
+    const isLocked = isMobileMenuOpen || isCartOpen;
+    if (isLocked) {
       const scrollY = window.scrollY;
       document.body.style.position = 'fixed';
       document.body.style.top = `-${scrollY}px`;
@@ -145,7 +146,7 @@ export default function App() {
         window.scrollTo(0, parseInt(scrollY || '0') * -1);
       }
     };
-  }, [isMobileMenuOpen]);
+  }, [isMobileMenuOpen, isCartOpen]);
 
   return (
     <main id="inicio" className="relative min-h-screen selection:bg-gold-500/30">
