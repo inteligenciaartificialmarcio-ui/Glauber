@@ -1,4 +1,3 @@
-import Hls from "hls.js";
 import { motion, AnimatePresence, useScroll, useTransform } from "motion/react";
 import { 
   Lock, 
@@ -57,38 +56,45 @@ export default function App() {
   const heroParallaxY = useTransform(heroScrollY, [0, 1], ["0%", "30%"]);
 
   useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
+    const initVideo = async () => {
+      const video = videoRef.current;
+      if (!video) return;
 
-    const videoSrc = "https://stream.mux.com/NcU3HlHeF7CUL86azTTzpy3Tlb00d6iF3BmCdFslMJYM.m3u8";
+      const videoSrc = "https://stream.mux.com/NcU3HlHeF7CUL86azTTzpy3Tlb00d6iF3BmCdFslMJYM.m3u8";
 
-    if (Hls.isSupported()) {
-      const hls = new Hls();
-      hls.loadSource(videoSrc);
-      hls.attachMedia(video);
-      hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        video.muted = true; // Ensure muted is explicitly set
-        const playPromise = video.play();
-        if (playPromise !== undefined) {
-          playPromise.catch(e => {
-            console.log("Autoplay was prevented or interrupted, waiting for interaction:", e);
-          });
-        }
-      });
-      return () => hls.destroy();
-    } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-      // For browsers with native HLS support (Safari)
-      video.src = videoSrc;
-      video.addEventListener("loadedmetadata", () => {
-        video.muted = true;
-        const playPromise = video.play();
-        if (playPromise !== undefined) {
-          playPromise.catch(e => {
-            console.log("Autoplay was prevented or interrupted:", e);
-          });
-        }
-      });
-    }
+      // Dynamically import Hls for better performance
+      const { default: Hls } = await import("hls.js");
+
+      if (Hls.isSupported()) {
+        const hls = new Hls();
+        hls.loadSource(videoSrc);
+        hls.attachMedia(video);
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+          video.muted = true;
+          const playPromise = video.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(e => {
+              console.log("Autoplay was prevented or interrupted, waiting for interaction:", e);
+            });
+          }
+        });
+        return () => hls.destroy();
+      } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+        // For browsers with native HLS support (Safari)
+        video.src = videoSrc;
+        video.addEventListener("loadedmetadata", () => {
+          video.muted = true;
+          const playPromise = video.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(e => {
+              console.log("Autoplay was prevented or interrupted:", e);
+            });
+          }
+        });
+      }
+    };
+
+    initVideo();
   }, []);
 
   useEffect(() => {
@@ -308,7 +314,7 @@ export default function App() {
             muted
             loop
             playsInline
-            preload="auto"
+            preload="metadata"
             className="w-full h-full object-cover object-[center_35%] md:object-center opacity-60"
           />
           {/* Subtle Overlay to ensure text readability */}
@@ -376,6 +382,8 @@ export default function App() {
                       referrerPolicy="no-referrer"
                       width={280}
                       height={400}
+                      fetchPriority="high"
+                      decoding="async"
                       className="w-full h-auto block"
                     />
                   </div>
@@ -440,6 +448,8 @@ export default function App() {
                   referrerPolicy="no-referrer"
                   width={400}
                   height={580}
+                  fetchPriority="high"
+                  decoding="async"
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
                   className="relative w-full max-w-[400px] block transition-all duration-500"
                 />
@@ -531,6 +541,7 @@ export default function App() {
                   width={600}
                   height={800}
                   loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover object-top"
                   referrerPolicy="no-referrer"
                 />
@@ -584,6 +595,7 @@ export default function App() {
                   width={600}
                   height={800}
                   loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover object-top"
                   referrerPolicy="no-referrer"
                 />
@@ -616,6 +628,7 @@ export default function App() {
                       <img 
                         src={CONTENT.synopsis.videoPlaceholder} 
                         alt="Video Placeholder" 
+                        loading="lazy"
                         className="w-full h-full object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700 cursor-pointer" 
                         referrerPolicy="no-referrer"
                         onClick={() => setIsPlayingVideo(true)}
@@ -713,6 +726,7 @@ export default function App() {
                     width={500}
                     height={625}
                     loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -828,6 +842,7 @@ export default function App() {
                   width={600}
                   height={400}
                   loading="lazy"
+                  decoding="async"
                   className="w-full h-auto block"
                 />
               </div>
@@ -862,6 +877,7 @@ export default function App() {
                   width={448}
                   height={560}
                   loading="lazy"
+                  decoding="async"
                   referrerPolicy="no-referrer"
                   className="w-full h-auto block"
                 />
@@ -935,6 +951,7 @@ export default function App() {
                   width={600}
                   height={400}
                   loading="lazy"
+                  decoding="async"
                   referrerPolicy="no-referrer"
                   className="w-full h-auto block"
                 />
@@ -1015,6 +1032,7 @@ export default function App() {
                   width={600}
                   height={400}
                   loading="lazy"
+                  decoding="async"
                   referrerPolicy="no-referrer"
                   className="w-full h-auto block"
                 />
@@ -1120,6 +1138,7 @@ export default function App() {
                 src="https://i.imgur.com/CpKEy5k.png" 
                 alt="Logo Piovan Editora" 
                 loading="lazy"
+                decoding="async"
                 className="opacity-100 scale-110 transform-gpu group-hover:scale-120 transition-transform duration-500"
                 referrerPolicy="no-referrer"
               />

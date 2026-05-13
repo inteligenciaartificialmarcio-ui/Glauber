@@ -124,13 +124,13 @@ export const CONTENT: ContentConfig = {
   contact: {
     contactTitle: "Fale Conosco",
     email: "contato@falaglauber.com.br",
-    whatsapp: "+55 21 99850-0632",
-    whatsappLink: "https://wa.me/5521998500632",
+    whatsapp: "(12) 98116-1375",
+    whatsappLink: "https://wa.me/5512981161375",
     footerInfo: {
       company: "LIVRARIA SELO NOVO",
       cnpj: "CNPJ: 59.863.032/0001-63",
       service: "Atendimento de segunda a sexta das 9h as 18h exceto feriado.",
-      phone: "Telefone: +55 21 99850-0632"
+      phone: "TELEFONE: (12) 98116-1375"
     }
   }
 };

@@ -119,6 +119,7 @@ export const CheckoutDrawer: React.FC<CheckoutDrawerProps> = ({ isOpen, onClose 
                       <img 
                         src={CONTENT.hero.bookImage} 
                         alt="Capa do livro no carrinho" 
+                        loading="lazy"
                         className="w-full h-full object-contain"
                         referrerPolicy="no-referrer"
                       />

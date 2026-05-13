@@ -3,6 +3,7 @@ import { createServer as createViteServer } from "vite";
 import path from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
+import compression from "compression";
 
 dotenv.config();
 
@@ -13,13 +14,26 @@ async function startServer() {
   const app = express();
   const PORT = 3000;
 
+  // Use Gzip compression
+  app.use(compression());
+
   // Cache for subscriber count to avoid hitting API limits
   let cachedSubCount: string | null = null;
   let lastUpdate = 0;
   const CACHE_DURATION = 1000 * 60 * 15; // 15 minutes
 
+  // Static files with cache control
+  const staticOptions = {
+    maxAge: "7d",
+    setHeaders: (res: express.Response, path: string) => {
+      if (path.match(/\.(js|css|woff2?|png|jpg|jpeg|webp|svg)$/)) {
+        res.setHeader("Cache-Control", "public, max-age=604800, immutable");
+      }
+    }
+  };
+
   // Serve static files from public directory
-  app.use(express.static(path.join(__dirname, "public")));
+  app.use(express.static(path.join(__dirname, "public"), staticOptions));
 
   app.get("/api/social-stats", async (req, res) => {
     try {
@@ -98,7 +112,7 @@ async function startServer() {
     app.use(vite.middlewares);
   } else {
     const distPath = path.join(__dirname, "dist");
-    app.use(express.static(distPath));
+    app.use(express.static(distPath, staticOptions));
     app.get("*", (req, res) => {
       res.sendFile(path.join(distPath, "index.html"));
     });
